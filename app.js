@@ -886,7 +886,7 @@ function showNotification(message) {
 
   document.body.appendChild(notification);
 
-  // Auto remove after 3 seconds
+
   setTimeout(function() {
     notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
     setTimeout(function() {
@@ -897,10 +897,60 @@ function showNotification(message) {
   }, 3000);
 }
 
-// Export functions for global access
+
 window.navigateToPage = navigateToPage;
 window.addToPlan = addToPlan;
 window.removeFromPlan = removeFromPlan;
 window.openServiceModal = openServiceModal;
 window.closeServiceModal = closeServiceModal;
 window.selectPackage = selectPackage;
+
+
+function saveSelectedServices() {
+  localStorage.setItem("selectedServices", JSON.stringify(selectedServices));
+}
+
+function loadSelectedServices() {
+  const saved = localStorage.getItem("selectedServices");
+  if (saved) {
+    selectedServices = JSON.parse(saved);
+  } else {
+    selectedServices = [];
+  }
+}
+
+
+function initializeApp() {
+  console.log('Initializing app...');
+  loadSelectedServices();  
+  setupNavigation();
+  setupMobileMenu();
+  setupWhatsAppIntegration();
+  populateContent();
+  setupServiceSelection();
+  setupModal();
+  setupContactForm();
+  updatePlanDisplay();
+  
+
+  navigateToPage('home');
+}
+
+
+function addToPlan(serviceId) {
+  const service = appData.services.find(s => s.id === serviceId);
+  if (service && !selectedServices.find(s => s.id === service.id)) {
+    selectedServices.push(service);
+    saveSelectedServices();   
+    updatePlanDisplay();
+    updateAllAddButtons();
+  }
+}
+
+
+function removeFromPlan(serviceId) {
+  selectedServices = selectedServices.filter(s => s.id !== serviceId);
+  saveSelectedServices();     
+  updatePlanDisplay();
+  updateAllAddButtons();
+}
