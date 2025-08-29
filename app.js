@@ -554,18 +554,33 @@ function populateTimeline() {
 }
 
 function populateTeam() {
-  const grid = document.getElementById('team-grid');
-  if (!grid) return;
+  const founderGrid = document.getElementById('founder-grid');
+  const teamGrid = document.getElementById('team-grid');
+  if (!founderGrid || !teamGrid) return;
 
-  grid.innerHTML = appData.team.map(member => `
-    <div class="team-member">
-      <span class="team-avatar">${member.image}</span>
-      <h3>${member.name}</h3>
-      <div class="team-position">${member.position}</div>
-      <p>${member.description}</p>
-    </div>
-  `).join('');
+  founderGrid.innerHTML = '';
+  teamGrid.innerHTML = '';
+
+  appData.team.forEach(member => {
+    const memberCard = `
+      <div class="team-card">
+        <div class="team-avatar">${member.image}</div>
+        <h3>${member.name}</h3>
+        <p class="team-position">${member.position}</p>
+        <p class="team-description">${member.description}</p>
+      </div>
+    `;
+
+    if (member.position.includes("Founder & CEO")) {
+      founderGrid.innerHTML = memberCard;
+    } else {
+      teamGrid.innerHTML += memberCard;
+    }
+  });
 }
+
+
+
 
 function populateServiceTestimonials() {
   const grid = document.getElementById('service-testimonials-grid');
